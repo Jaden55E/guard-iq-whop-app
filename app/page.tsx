@@ -12,35 +12,17 @@ export default function Page() {
 
 			window.startAssessment = function() {
 				const bubbleScreen = document.getElementById('bubbleScreen');
-				const analyzingScreen = document.getElementById('analyzingScreen');
-				const mainBubble = document.getElementById('mainBubble');
+				const chatInterface = document.getElementById('chatInterface');
 
-				// Fade out the bubble screen
+				// Fade out the bubble screen completely
 				bubbleScreen.classList.add('fade-out');
 
 				setTimeout(() => {
 					bubbleScreen.style.display = 'none';
-					analyzingScreen.classList.remove('hidden');
-					analyzingScreen.classList.add('fade-in');
-
-					// After 3 seconds of loading, show chat interface
-					setTimeout(() => {
-						showChatInterface();
-					}, 3000);
-				}, 500);
-			}
-
-			function showChatInterface() {
-				const analyzingScreen = document.getElementById('analyzingScreen');
-				const chatInterface = document.getElementById('chatInterface');
-
-				analyzingScreen.classList.add('fade-out');
-
-				setTimeout(() => {
-					analyzingScreen.style.display = 'none';
 					chatInterface.classList.remove('hidden');
 					chatInterface.classList.add('fade-in');
 
+					// Start conversation
 					setTimeout(() => {
 						addAIMessage("What's up. I'm here to help you figure it out.");
 						setTimeout(() => {
@@ -53,18 +35,20 @@ export default function Page() {
 			window.sendMessage = function() {
 				const input = document.getElementById('userInput');
 				const message = input.value.trim();
-				
+
 				if (!message) return;
-				
+
+				// Create floating message effect
 				createFloatingMessage(message, input);
+
 				addUserMessage(message);
 				input.value = '';
-				
+
 				userStruggles.push(message);
-				
+
 				setTimeout(() => {
 					showTypingIndicator();
-					
+
 					setTimeout(() => {
 						removeTypingIndicator();
 						handleAIResponse(message);
@@ -80,13 +64,15 @@ export default function Page() {
 						\${text}
 					</div>
 				\`;
-				
+
+				// Position relative to input
 				const rect = inputElement.getBoundingClientRect();
 				floatingMsg.style.left = rect.left + 'px';
 				floatingMsg.style.top = rect.top + 'px';
-				
+
 				document.body.appendChild(floatingMsg);
-				
+
+				// Remove after animation
 				setTimeout(() => {
 					floatingMsg.remove();
 				}, 2000);
@@ -143,16 +129,16 @@ export default function Page() {
 
 			function handleAIResponse(userMessage) {
 				conversationStep++;
-				
+
 				if (conversationStep === 1) {
 					const response = analyzeStruggle(userMessage);
 					addAIMessage(response);
 				} else if (conversationStep === 2) {
 					addAIMessage("Got it. Based on what you told me, I'm building a custom assessment just for you.");
-					
+
 					setTimeout(() => {
 						addAIMessage("This'll take 2 minutes. Answer based on what actually happens in games, not what you think the right answer is.");
-						
+
 						setTimeout(() => {
 							transitionToAnalyzing();
 						}, 2000);
@@ -162,7 +148,7 @@ export default function Page() {
 
 			function analyzeStruggle(message) {
 				const lowerMsg = message.toLowerCase();
-				
+
 				if (lowerMsg.includes('confidence') || lowerMsg.includes('freeze') || lowerMsg.includes('pressure')) {
 					return "So it's a mental thing. You know you got the skill, but something happens when it matters. When you're in practice vs games, how different do you play?";
 				} else if (lowerMsg.includes('decision') || lowerMsg.includes('read') || lowerMsg.includes('iq')) {
@@ -185,6 +171,7 @@ export default function Page() {
 					analyzingScreen.classList.remove('hidden');
 					analyzingScreen.classList.add('fade-in');
 
+					// After 3 seconds, show typeform
 					setTimeout(() => {
 						transitionToTypeform();
 					}, 3000);
@@ -207,6 +194,7 @@ export default function Page() {
 				alert('Quiz complete! Typeform would redirect back with scores like:\\nyoursite.com?decision=68&awareness=72&pressure=54\\n\\nThen you show the scorecard.');
 			}
 
+			// Enter key to send
 			document.addEventListener('DOMContentLoaded', () => {
 				const input = document.getElementById('userInput');
 				if (input) {
@@ -231,7 +219,8 @@ export default function Page() {
 					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 					overflow-x: hidden;
 				}
-				
+
+				/* Real Soap Bubble with Iridescence */
 				.bubble-3d {
 					position: relative;
 					width: 400px;
@@ -241,8 +230,9 @@ export default function Page() {
 					transition: transform 0.3s ease;
 					z-index: 5;
 					animation: float 6s ease-in-out infinite;
-					background: 
-						radial-gradient(circle at 20% 20%, 
+					/* Real soap bubble appearance */
+					background:
+						radial-gradient(circle at 20% 20%,
 							rgba(255, 255, 255, 0.9) 0%,
 							rgba(200, 220, 255, 0.6) 15%,
 							rgba(255, 200, 220, 0.5) 30%,
@@ -250,22 +240,24 @@ export default function Page() {
 							rgba(255, 220, 200, 0.3) 60%,
 							rgba(200, 200, 255, 0.2) 75%,
 							transparent 90%),
-						radial-gradient(circle at 80% 30%, 
+						radial-gradient(circle at 80% 30%,
 							rgba(255, 200, 255, 0.7) 0%,
 							rgba(200, 255, 255, 0.5) 25%,
 							rgba(255, 255, 200, 0.4) 50%,
 							transparent 75%),
-						radial-gradient(circle at 30% 70%, 
+						radial-gradient(circle at 30% 70%,
 							rgba(200, 255, 200, 0.6) 0%,
 							rgba(255, 200, 200, 0.4) 35%,
 							rgba(220, 220, 255, 0.3) 70%,
 							transparent 90%);
-					box-shadow: 
+					/* Subtle shadow for depth */
+					box-shadow:
 						0 20px 60px rgba(0, 0, 0, 0.1),
 						0 10px 30px rgba(0, 0, 0, 0.05),
 						inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 				}
-				
+
+				/* Multiple iridescent highlights */
 				.bubble-3d::before {
 					content: '';
 					position: absolute;
@@ -273,7 +265,7 @@ export default function Page() {
 					left: 25%;
 					width: 25%;
 					height: 25%;
-					background: radial-gradient(circle, 
+					background: radial-gradient(circle,
 						rgba(255, 255, 255, 0.9) 0%,
 						rgba(200, 220, 255, 0.7) 30%,
 						rgba(255, 200, 220, 0.5) 60%,
@@ -281,7 +273,7 @@ export default function Page() {
 					border-radius: 50%;
 					filter: blur(1px);
 				}
-				
+
 				.bubble-3d::after {
 					content: '';
 					position: absolute;
@@ -289,7 +281,7 @@ export default function Page() {
 					right: 20%;
 					width: 20%;
 					height: 20%;
-					background: radial-gradient(circle, 
+					background: radial-gradient(circle,
 						rgba(255, 255, 255, 0.8) 0%,
 						rgba(220, 255, 200, 0.6) 40%,
 						rgba(255, 220, 200, 0.4) 70%,
@@ -297,20 +289,32 @@ export default function Page() {
 					border-radius: 50%;
 					filter: blur(1px);
 				}
-				
+
+				/* Additional iridescent spots */
+				.bubble-3d {
+					background-image:
+						radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.9) 0%, transparent 30%),
+						radial-gradient(circle at 85% 25%, rgba(200, 220, 255, 0.7) 0%, transparent 40%),
+						radial-gradient(circle at 25% 75%, rgba(255, 200, 220, 0.6) 0%, transparent 35%),
+						radial-gradient(circle at 75% 85%, rgba(220, 255, 200, 0.5) 0%, transparent 30%),
+						radial-gradient(circle at 50% 10%, rgba(255, 220, 200, 0.8) 0%, transparent 25%),
+						radial-gradient(circle at 90% 60%, rgba(200, 200, 255, 0.6) 0%, transparent 35%);
+				}
+
 				@keyframes float {
 					0%, 100% { transform: translateY(0) scale(1) rotateY(0deg); }
 					50% { transform: translateY(-20px) scale(1.01) rotateY(2deg); }
 				}
-				
+
 				.bubble-3d:hover {
 					transform: scale(1.03) rotateY(1deg);
 				}
-				
+
+				/* Bubble Pop Animation */
 				.bubble-pop {
 					animation: bubblePop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 				}
-				
+
 				@keyframes bubblePop {
 					0% {
 						transform: scale(1) rotateY(0deg);
@@ -329,14 +333,16 @@ export default function Page() {
 						opacity: 0;
 					}
 				}
-				
+
+				/* Glassmorphism Chat Container - Removed */
 				.glass-container {
 					background: transparent;
 					backdrop-filter: none;
 					border: none;
 					box-shadow: none;
 				}
-				
+
+				/* Chat Bubbles - Centered and ChatGPT Style */
 				.chat-bubble {
 					position: relative;
 					animation: gameFadeIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -345,7 +351,7 @@ export default function Page() {
 					display: flex;
 					justify-content: center;
 				}
-				
+
 				@keyframes gameFadeIn {
 					0% {
 						opacity: 0;
@@ -368,7 +374,7 @@ export default function Page() {
 						filter: blur(0);
 					}
 				}
-				
+
 				.user-bubble {
 					background: none;
 					color: #000000;
@@ -378,7 +384,7 @@ export default function Page() {
 					padding: 12px 20px;
 					margin: 8px 0;
 				}
-				
+
 				.user-bubble p {
 					background: #f7f7f8;
 					padding: 12px 16px;
@@ -389,7 +395,7 @@ export default function Page() {
 					border: 1px solid #e5e5e5;
 					text-align: center;
 				}
-				
+
 				.ai-bubble {
 					background: none;
 					color: #000000;
@@ -400,7 +406,7 @@ export default function Page() {
 					padding: 12px 20px;
 					margin: 8px 0;
 				}
-				
+
 				.ai-bubble p {
 					background: #ffffff;
 					padding: 12px 16px;
@@ -415,14 +421,15 @@ export default function Page() {
 					align-items: center;
 					justify-content: center;
 				}
-				
+
+				/* Floating Message Effect */
 				.floating-message {
 					position: absolute;
 					pointer-events: none;
 					z-index: 20;
 					animation: floatToBubble 2s ease-out forwards;
 				}
-				
+
 				@keyframes floatToBubble {
 					0% {
 						opacity: 1;
@@ -437,44 +444,47 @@ export default function Page() {
 						transform: translateY(-100px) scale(0.8) rotate(10deg);
 					}
 				}
-				
+
+				/* Typing Indicator - ChatGPT Style */
 				.typing-indicator span {
 					animation: bounce 1.4s infinite;
 					background-color: #000000;
 					width: 8px;
 					height: 8px;
 				}
-				
+
 				.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
 				.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-				
+
 				@keyframes bounce {
 					0%, 60%, 100% { transform: translateY(0); }
 					30% { transform: translateY(-10px); }
 				}
-				
+
+				/* Transition Animations */
 				.fade-out {
 					animation: fadeOut 0.5s ease forwards;
 				}
-				
+
 				.fade-in {
 					animation: fadeIn 0.5s ease forwards;
 				}
-				
+
 				@keyframes fadeOut {
 					to { opacity: 0; transform: scale(0.95); }
 				}
-				
+
 				@keyframes fadeIn {
 					from { opacity: 0; transform: scale(0.95); }
 					to { opacity: 1; transform: scale(1); }
 				}
-				
+
+				/* Initial page load fade-in animation */
 				.page-load-fade {
 					opacity: 0;
 					animation: pageLoadFadeIn 1.5s ease-out forwards;
 				}
-				
+
 				@keyframes pageLoadFadeIn {
 					0% {
 						opacity: 0;
@@ -485,16 +495,18 @@ export default function Page() {
 						transform: translateY(0);
 					}
 				}
-				
+
+				/* Input Glow */
 				.input-glow:focus {
 					box-shadow: 0 0 0 3px rgba(131, 56, 236, 0.4),
 								0 10px 40px rgba(131, 56, 236, 0.2);
 				}
-				
+
+				/* Typeform Container Transition */
 				.typeform-appear {
 					animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 				}
-				
+
 				@keyframes slideUp {
 					from {
 						opacity: 0;
@@ -505,7 +517,8 @@ export default function Page() {
 						transform: translateY(0);
 					}
 				}
-				
+
+				/* Loading Spinner */
 				.spinner {
 					border: 3px solid rgba(0, 0, 0, 0.1);
 					border-top-color: #ff006e;
@@ -514,32 +527,28 @@ export default function Page() {
 					height: 40px;
 					animation: spin 0.8s linear infinite;
 				}
-				
+
 				@keyframes spin {
 					to { transform: rotate(360deg); }
 				}
-				
+
+				/* Bubble Screen Layout */
 				.bubble-screen {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-					justify-content: flex-start;
+					justify-content: center;
 					min-height: 100vh;
 					position: relative;
 					background: #6b7280;
-					padding-top: 8vh;
+					gap: 3rem;
 				}
-				
+
+				/* Start Button */
 				.start-button {
-					position: absolute;
-					top: calc(50% + 250px);
-					left: 42%;
-					transform: translateX(-50%);
-					opacity: 1;
-					transition: opacity 0.3s ease;
-					z-index: 15;
+					margin-top: 2rem;
 				}
-				
+
 				.transparent-button {
 					background: rgba(255, 255, 255, 0.1);
 					color: #ffffff;
@@ -552,111 +561,72 @@ export default function Page() {
 					transition: all 0.3s ease;
 					box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 				}
-				
+
 				.transparent-button:hover {
 					background: rgba(255, 255, 255, 0.2);
 					border-color: rgba(255, 255, 255, 0.3);
 					transform: scale(1.05);
 					box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 				}
-				
-				.chat-overlay {
-					position: absolute;
-					top: 0;
-					left: 0;
-					right: 0;
-					bottom: 0;
+
+				/* Chat Interface - Full screen */
+				.chat-screen {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
 					justify-content: center;
-					z-index: 10;
-					background: transparent;
+					min-height: 100vh;
+					position: relative;
+					background: #6b7280;
+					padding: 2rem;
 				}
-				
+
+				/* Chat Container Styling */
 				#chatContainer {
 					background: transparent;
 					border: none;
 					box-shadow: none;
 					padding: 20px;
 				}
-				
+
+				/* Input Area Styling */
 				#inputArea {
 					background: transparent;
 					border: none;
 					box-shadow: none;
 					padding: 20px;
 				}
-				
-				.title-text {
-					color: #ffffff;
-					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-					font-weight: 700;
-					font-size: 1.5rem;
-					letter-spacing: 0.05em;
-					text-transform: uppercase;
-				}
-				
-				.subtitle-text {
-					color: #d1d5db;
-				}
-				
+
+				/* Header text styling */
 				.header-text {
 					color: #ffffff;
 				}
-				
+
 				.header-subtitle {
 					color: #d1d5db;
 				}
-				
-				.title-section {
-					margin-bottom: 8vh;
-					margin-top: 4vh;
-					transition: opacity 0.3s ease;
-				}
 
-				.bubble-section {
-					margin-bottom: 4vh;
-					margin-top: 2vh;
-				}
-				
-				.title-section.hidden {
-					opacity: 0;
-					pointer-events: none;
-				}
-				
-				.chat-header {
-					transition: opacity 0.1s ease;
-				}
-				
-				.chat-header.hidden {
-					opacity: 0;
-					pointer-events: none;
-				}
-				
+				/* Regular white headline text */
 				.white-headline {
 					color: #ffffff;
 					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-weight: bold;
 					text-shadow: none;
 					line-height: 1.2;
-					letter-spacing: -0.01em;
-					margin-bottom: 1rem;
+					letter-spacing: -0.02em;
 				}
 			`}</style>
 
 			<div className="min-h-screen">
+				{/* Page 1: Bubble Screen with just bubble, headline, and start button */}
 				<div id="bubbleScreen" className="bubble-screen">
-					<div id="titleSection" className="text-center title-section page-load-fade">
-						<h1 className="text-6xl font-bold white-headline">
-							Identify What's
-						</h1>
-						<h1 className="text-6xl font-bold white-headline">
-							Holding You Back
+					<div className="text-center page-load-fade">
+						<h1 className="text-5xl font-bold white-headline mb-12">
+							Identify What's Holding You Back
 						</h1>
 					</div>
 
-					<div className="flex justify-center bubble-section page-load-fade">
+					<div className="page-load-fade">
 						<div
 							id="mainBubble"
 							className="bubble-3d"
@@ -672,57 +642,71 @@ export default function Page() {
 							Start
 						</button>
 					</div>
+				</div>
 
-					<div id="chatInterface" className="hidden chat-overlay">
-						<div id="chatHeader" className="text-center mb-6 chat-header">
-							<h2 className="text-3xl font-bold header-text mb-2">
-								Let's Identify What's Holding You Back
-							</h2>
-							<p className="header-subtitle">Be honest - this stays between us</p>
-						</div>
+				{/* Page 2: Chat Interface */}
+				<div id="chatInterface" className="hidden chat-screen">
+					<div className="text-center mb-6">
+						<h2 className="text-3xl font-bold header-text mb-2">
+							Let's Identify What's Holding You Back
+						</h2>
+						<p className="header-subtitle">
+							Be honest - this stays between us
+						</p>
+					</div>
 
-						<div
-							id="chatContainer"
-							className="glass-container rounded-3xl p-6 mb-6 h-[500px] w-full max-w-3xl overflow-y-auto shadow-2xl"
-						></div>
+					<div
+						id="chatContainer"
+						className="glass-container rounded-3xl p-6 mb-6 h-[500px] w-full max-w-3xl overflow-y-auto shadow-2xl"
+					></div>
 
-						<div
-							id="inputArea"
-							className="glass-container rounded-3xl p-4 w-full max-w-3xl shadow-2xl"
-						>
-							<div className="flex gap-3">
-								<input
-									type="text"
-									id="userInput"
-									placeholder="type here"
-									className="flex-1 bg-gray-100 text-black px-6 py-4 rounded-full border border-gray-300 focus:outline-none input-glow placeholder-gray-500"
-									onKeyPress={(e) => {
-										if (e.key === "Enter") (window as any).sendMessage();
-									}}
-								/>
-								<button
-									onClick={() => (window as any).sendMessage()}
-									className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-all hover:scale-105 shadow-lg"
-								>
-									Send
-								</button>
-							</div>
+					<div
+						id="inputArea"
+						className="glass-container rounded-3xl p-4 w-full max-w-3xl shadow-2xl"
+					>
+						<div className="flex gap-3">
+							<input
+								type="text"
+								id="userInput"
+								placeholder="type here"
+								className="flex-1 bg-gray-100 text-black px-6 py-4 rounded-full border border-gray-300 focus:outline-none input-glow placeholder-gray-500"
+								onKeyPress={(e) => {
+									if (e.key === "Enter") (window as any).sendMessage();
+								}}
+							/>
+							<button
+								onClick={() => (window as any).sendMessage()}
+								className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-all hover:scale-105 shadow-lg"
+							>
+								Send
+							</button>
 						</div>
 					</div>
 				</div>
 
-				<div id="analyzingScreen" className="hidden min-h-screen flex items-center justify-center">
-					<div className="text-center">
-						<div className="flex justify-center gap-3 mb-8">
-							<div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
-							<div className="w-4 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-							<div className="w-4 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+				{/* Page 3: Loading/Analyzing Screen */}
+				<div id="analyzingScreen" className="hidden chat-screen">
+					<div className="glass-container rounded-3xl p-12 max-w-2xl mx-auto">
+						<div className="flex justify-center mb-6">
+							<div className="spinner"></div>
+						</div>
+						<h2 className="text-3xl font-bold text-white mb-4">
+							Analyzing your game...
+						</h2>
+						<p className="text-gray-300 text-lg mb-6">
+							Breaking down your struggles and building a custom assessment
+						</p>
+						<div className="flex justify-center gap-2">
+							<div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse"></div>
+							<div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse delay-100"></div>
+							<div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse delay-200"></div>
 						</div>
 					</div>
 				</div>
 
-				<div id="typeformContainer" className="hidden w-full max-w-4xl">
-					<div className="glass-container rounded-3xl p-8 shadow-2xl typeform-appear">
+				{/* Page 4: Typeform Container */}
+				<div id="typeformContainer" className="hidden chat-screen">
+					<div className="glass-container rounded-3xl p-8 shadow-2xl typeform-appear max-w-4xl w-full">
 						<div className="text-center mb-6">
 							<h2 className="text-3xl font-bold text-white mb-2">
 								Your Custom Assessment
@@ -759,4 +743,3 @@ export default function Page() {
 		</>
 	);
 }
-
