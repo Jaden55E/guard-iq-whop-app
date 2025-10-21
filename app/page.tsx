@@ -11,36 +11,43 @@ export default function Page() {
 			let userStruggles = [];
 
 			window.startAssessment = function() {
-				const chatInterface = document.getElementById('chatInterface');
+				const bubbleScreen = document.getElementById('bubbleScreen');
+				const analyzingScreen = document.getElementById('analyzingScreen');
 				const mainBubble = document.getElementById('mainBubble');
-				const titleSection = document.getElementById('titleSection');
-				const chatHeader = document.getElementById('chatHeader');
-				const startButton = document.querySelector('.start-button');
-				
-				if (mainBubble) {
-					mainBubble.style.animation = 'none';
-				}
-				
-				titleSection.classList.add('hidden');
-				chatHeader.classList.add('hidden');
-				
-				if (startButton) {
-					startButton.style.transition = 'opacity 0.5s ease';
-					startButton.style.opacity = '0';
-					setTimeout(() => {
-						startButton.style.display = 'none';
-					}, 500);
-				}
-				
-				chatInterface.classList.remove('hidden');
-				chatInterface.classList.add('fade-in');
-				
+
+				// Fade out the bubble screen
+				bubbleScreen.classList.add('fade-out');
+
 				setTimeout(() => {
-					addAIMessage("What's up. I'm here to help you figure it out.");
+					bubbleScreen.style.display = 'none';
+					analyzingScreen.classList.remove('hidden');
+					analyzingScreen.classList.add('fade-in');
+
+					// After 3 seconds of loading, show chat interface
 					setTimeout(() => {
-						addAIMessage("Dump your thoughts. Let's go!");
-					}, 800);
-				}, 300);
+						showChatInterface();
+					}, 3000);
+				}, 500);
+			}
+
+			function showChatInterface() {
+				const analyzingScreen = document.getElementById('analyzingScreen');
+				const chatInterface = document.getElementById('chatInterface');
+
+				analyzingScreen.classList.add('fade-out');
+
+				setTimeout(() => {
+					analyzingScreen.style.display = 'none';
+					chatInterface.classList.remove('hidden');
+					chatInterface.classList.add('fade-in');
+
+					setTimeout(() => {
+						addAIMessage("What's up. I'm here to help you figure it out.");
+						setTimeout(() => {
+							addAIMessage("Dump your thoughts. Let's go!");
+						}, 800);
+					}, 300);
+				}, 500);
 			}
 
 			window.sendMessage = function() {
@@ -168,33 +175,28 @@ export default function Page() {
 			}
 
 			function transitionToAnalyzing() {
-				const bubbleScreen = document.getElementById('bubbleScreen');
+				const chatInterface = document.getElementById('chatInterface');
 				const analyzingScreen = document.getElementById('analyzingScreen');
-				const mainBubble = document.getElementById('mainBubble');
-				
-				mainBubble.classList.add('bubble-pop');
-				
+
+				chatInterface.classList.add('fade-out');
+
 				setTimeout(() => {
-					bubbleScreen.classList.add('fade-out');
-					
+					chatInterface.style.display = 'none';
+					analyzingScreen.classList.remove('hidden');
+					analyzingScreen.classList.add('fade-in');
+
 					setTimeout(() => {
-						bubbleScreen.style.display = 'none';
-						analyzingScreen.classList.remove('hidden');
-						analyzingScreen.classList.add('fade-in');
-						
-						setTimeout(() => {
-							transitionToTypeform();
-						}, 3000);
-					}, 500);
-				}, 800);
+						transitionToTypeform();
+					}, 3000);
+				}, 500);
 			}
 
 			function transitionToTypeform() {
 				const analyzingScreen = document.getElementById('analyzingScreen');
 				const typeformContainer = document.getElementById('typeformContainer');
-				
+
 				analyzingScreen.classList.add('fade-out');
-				
+
 				setTimeout(() => {
 					analyzingScreen.style.display = 'none';
 					typeformContainer.classList.remove('hidden');
@@ -608,10 +610,11 @@ export default function Page() {
 				}
 				
 				.title-section {
-					margin-bottom: 6vh;
+					margin-bottom: 8vh;
+					margin-top: 4vh;
 					transition: opacity 0.3s ease;
 				}
-				
+
 				.bubble-section {
 					margin-bottom: 4vh;
 					margin-top: 2vh;
@@ -636,16 +639,20 @@ export default function Page() {
 					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-weight: bold;
 					text-shadow: none;
-					line-height: 0.9;
-					letter-spacing: -0.02em;
+					line-height: 1.2;
+					letter-spacing: -0.01em;
+					margin-bottom: 1rem;
 				}
 			`}</style>
 
 			<div className="min-h-screen">
 				<div id="bubbleScreen" className="bubble-screen">
 					<div id="titleSection" className="text-center title-section page-load-fade">
-						<h1 className="text-5xl font-bold white-headline mb-3">
-							Identify What's Holding You Back
+						<h1 className="text-6xl font-bold white-headline">
+							Identify What's
+						</h1>
+						<h1 className="text-6xl font-bold white-headline">
+							Holding You Back
 						</h1>
 					</div>
 
@@ -704,21 +711,12 @@ export default function Page() {
 					</div>
 				</div>
 
-				<div id="analyzingScreen" className="hidden text-center">
-					<div className="glass-container rounded-3xl p-12 max-w-2xl mx-auto">
-						<div className="flex justify-center mb-6">
-							<div className="spinner"></div>
-						</div>
-						<h2 className="text-3xl font-bold text-white mb-4">
-							Analyzing your game...
-						</h2>
-						<p className="text-gray-300 text-lg mb-6">
-							Breaking down your struggles and building a custom assessment
-						</p>
-						<div className="flex justify-center gap-2">
-							<div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse"></div>
-							<div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse delay-100"></div>
-							<div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse delay-200"></div>
+				<div id="analyzingScreen" className="hidden min-h-screen flex items-center justify-center">
+					<div className="text-center">
+						<div className="flex justify-center gap-3 mb-8">
+							<div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
+							<div className="w-4 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+							<div className="w-4 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
 						</div>
 					</div>
 				</div>
