@@ -11,43 +11,25 @@ export default function Page() {
 			let userStruggles = [];
 
 			window.startAssessment = function() {
+				const bubbleScreen = document.getElementById('bubbleScreen');
 				const chatInterface = document.getElementById('chatInterface');
-				const mainBubble = document.getElementById('mainBubble');
-				const titleSection = document.getElementById('titleSection');
-				const chatHeader = document.getElementById('chatHeader');
-				const startButton = document.querySelector('.start-button');
 
-				// Stop the bubble floating animation
-				if (mainBubble) {
-					mainBubble.style.animation = 'none';
-				}
+				// Fade out the bubble screen completely
+				bubbleScreen.classList.add('fade-out');
 
-				// Hide the title section instantly
-				titleSection.classList.add('hidden');
-
-				// Hide the chat header instantly
-				chatHeader.classList.add('hidden');
-
-				// Fade away the start button
-				if (startButton) {
-					startButton.style.transition = 'opacity 0.5s ease';
-					startButton.style.opacity = '0';
-					setTimeout(() => {
-						startButton.style.display = 'none';
-					}, 500);
-				}
-
-				// Show chat interface as overlay
-				chatInterface.classList.remove('hidden');
-				chatInterface.classList.add('fade-in');
-
-				// Start conversation
 				setTimeout(() => {
-					addAIMessage("What's up. I'm here to help you figure it out.");
+					bubbleScreen.style.display = 'none';
+					chatInterface.classList.remove('hidden');
+					chatInterface.classList.add('fade-in');
+
+					// Start conversation
 					setTimeout(() => {
-						addAIMessage("Dump your thoughts. Let's go!");
-					}, 800);
-				}, 300);
+						addAIMessage("What's up. I'm here to help you figure it out.");
+						setTimeout(() => {
+							addAIMessage("Dump your thoughts. Let's go!");
+						}, 800);
+					}, 300);
+				}, 500);
 			}
 
 			window.sendMessage = function() {
@@ -179,28 +161,21 @@ export default function Page() {
 			}
 
 			function transitionToAnalyzing() {
-				const bubbleScreen = document.getElementById('bubbleScreen');
+				const chatInterface = document.getElementById('chatInterface');
 				const analyzingScreen = document.getElementById('analyzingScreen');
-				const mainBubble = document.getElementById('mainBubble');
 
-				// Add bubble pop animation
-				mainBubble.classList.add('bubble-pop');
+				chatInterface.classList.add('fade-out');
 
-				// Transition to analyzing screen after bubble pop
 				setTimeout(() => {
-					bubbleScreen.classList.add('fade-out');
+					chatInterface.style.display = 'none';
+					analyzingScreen.classList.remove('hidden');
+					analyzingScreen.classList.add('fade-in');
 
+					// After 3 seconds, show typeform
 					setTimeout(() => {
-						bubbleScreen.style.display = 'none';
-						analyzingScreen.classList.remove('hidden');
-						analyzingScreen.classList.add('fade-in');
-
-						// After 3 seconds, show typeform
-						setTimeout(() => {
-							transitionToTypeform();
-						}, 3000);
-					}, 500);
-				}, 800); // Wait for bubble pop animation to complete
+						transitionToTypeform();
+					}, 3000);
+				}, 500);
 			}
 
 			function transitionToTypeform() {
@@ -216,8 +191,6 @@ export default function Page() {
 			}
 
 			window.simulateQuizComplete = function() {
-				// This simulates quiz completion for demo
-				// In production, Typeform redirects back with scores
 				alert('Quiz complete! Typeform would redirect back with scores like:\\nyoursite.com?decision=68&awareness=72&pressure=54\\n\\nThen you show the scorecard.');
 			}
 
@@ -315,6 +288,17 @@ export default function Page() {
 						transparent 100%);
 					border-radius: 50%;
 					filter: blur(1px);
+				}
+
+				/* Additional iridescent spots */
+				.bubble-3d {
+					background-image:
+						radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.9) 0%, transparent 30%),
+						radial-gradient(circle at 85% 25%, rgba(200, 220, 255, 0.7) 0%, transparent 40%),
+						radial-gradient(circle at 25% 75%, rgba(255, 200, 220, 0.6) 0%, transparent 35%),
+						radial-gradient(circle at 75% 85%, rgba(220, 255, 200, 0.5) 0%, transparent 30%),
+						radial-gradient(circle at 50% 10%, rgba(255, 220, 200, 0.8) 0%, transparent 25%),
+						radial-gradient(circle at 90% 60%, rgba(200, 200, 255, 0.6) 0%, transparent 35%);
 				}
 
 				@keyframes float {
@@ -548,27 +532,21 @@ export default function Page() {
 					to { transform: rotate(360deg); }
 				}
 
-				/* Bubble Screen Layout - Adjusted for better positioning */
+				/* Bubble Screen Layout */
 				.bubble-screen {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-					justify-content: flex-start;
+					justify-content: center;
 					min-height: 100vh;
 					position: relative;
 					background: #6b7280;
-					padding-top: 8vh;
+					gap: 3rem;
 				}
 
-				/* Start Button - Aligned with H in headline, under bubble */
+				/* Start Button */
 				.start-button {
-					position: absolute;
-					top: calc(50% + 250px);
-					left: 42%;
-					transform: translateX(-50%);
-					opacity: 1;
-					transition: opacity 0.3s ease;
-					z-index: 15;
+					margin-top: 2rem;
 				}
 
 				.transparent-button {
@@ -591,19 +569,16 @@ export default function Page() {
 					box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 				}
 
-				/* Chat Interface Overlay - Higher z-index */
-				.chat-overlay {
-					position: absolute;
-					top: 0;
-					left: 0;
-					right: 0;
-					bottom: 0;
+				/* Chat Interface - Full screen */
+				.chat-screen {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
 					justify-content: center;
-					z-index: 10;
-					background: transparent;
+					min-height: 100vh;
+					position: relative;
+					background: #6b7280;
+					padding: 2rem;
 				}
 
 				/* Chat Container Styling */
@@ -622,20 +597,6 @@ export default function Page() {
 					padding: 20px;
 				}
 
-				/* Title and subtitle styling for grey background - Much smaller */
-				.title-text {
-					color: #ffffff;
-					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-					font-weight: 700;
-					font-size: 1.5rem;
-					letter-spacing: 0.05em;
-					text-transform: uppercase;
-				}
-
-				.subtitle-text {
-					color: #d1d5db;
-				}
-
 				/* Header text styling */
 				.header-text {
 					color: #ffffff;
@@ -645,56 +606,27 @@ export default function Page() {
 					color: #d1d5db;
 				}
 
-				/* Title section positioning */
-				.title-section {
-					margin-bottom: 6vh;
-					transition: opacity 0.3s ease;
-				}
-
-				/* Bubble section positioning - moved down */
-				.bubble-section {
-					margin-bottom: 4vh;
-					margin-top: 2vh;
-				}
-
-				/* Hidden state for title */
-				.title-section.hidden {
-					opacity: 0;
-					pointer-events: none;
-				}
-
-				/* Chat header styling */
-				.chat-header {
-					transition: opacity 0.1s ease;
-				}
-
-				.chat-header.hidden {
-					opacity: 0;
-					pointer-events: none;
-				}
-
 				/* Regular white headline text */
 				.white-headline {
 					color: #ffffff;
 					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-weight: bold;
 					text-shadow: none;
-					line-height: 0.9;
+					line-height: 1.2;
 					letter-spacing: -0.02em;
 				}
 			`}</style>
 
 			<div className="min-h-screen">
-				{/* Bubble Screen with Chat Overlay */}
+				{/* Page 1: Bubble Screen with just bubble, headline, and start button */}
 				<div id="bubbleScreen" className="bubble-screen">
-					{/* Background Content */}
-					<div id="titleSection" className="text-center title-section page-load-fade">
-						<h1 className="text-5xl font-bold white-headline mb-3">
+					<div className="text-center page-load-fade">
+						<h1 className="text-5xl font-bold white-headline mb-12">
 							Identify What's Holding You Back
 						</h1>
 					</div>
 
-					<div className="flex justify-center bubble-section page-load-fade">
+					<div className="page-load-fade">
 						<div
 							id="mainBubble"
 							className="bubble-3d"
@@ -702,7 +634,6 @@ export default function Page() {
 						></div>
 					</div>
 
-					{/* Start Button - Always visible at bottom */}
 					<div className="start-button page-load-fade">
 						<button
 							onClick={() => (window as any).startAssessment()}
@@ -711,53 +642,50 @@ export default function Page() {
 							Start
 						</button>
 					</div>
+				</div>
 
-					{/* Chat Overlay (Hidden Initially) */}
-					<div id="chatInterface" className="hidden chat-overlay">
-						{/* Header */}
-						<div id="chatHeader" className="text-center mb-6 chat-header">
-							<h2 className="text-3xl font-bold header-text mb-2">
-								Let's Identify What's Holding You Back
-							</h2>
-							<p className="header-subtitle">
-								Be honest - this stays between us
-							</p>
-						</div>
+				{/* Page 2: Chat Interface */}
+				<div id="chatInterface" className="hidden chat-screen">
+					<div className="text-center mb-6">
+						<h2 className="text-3xl font-bold header-text mb-2">
+							Let's Identify What's Holding You Back
+						</h2>
+						<p className="header-subtitle">
+							Be honest - this stays between us
+						</p>
+					</div>
 
-						{/* Glass Chat Container */}
-						<div
-							id="chatContainer"
-							className="glass-container rounded-3xl p-6 mb-6 h-[500px] w-full max-w-3xl overflow-y-auto shadow-2xl"
-						></div>
+					<div
+						id="chatContainer"
+						className="glass-container rounded-3xl p-6 mb-6 h-[500px] w-full max-w-3xl overflow-y-auto shadow-2xl"
+					></div>
 
-						{/* Input Area */}
-						<div
-							id="inputArea"
-							className="glass-container rounded-3xl p-4 w-full max-w-3xl shadow-2xl"
-						>
-							<div className="flex gap-3">
-								<input
-									type="text"
-									id="userInput"
-									placeholder="type here"
-									className="flex-1 bg-gray-100 text-black px-6 py-4 rounded-full border border-gray-300 focus:outline-none input-glow placeholder-gray-500"
-									onKeyPress={(e) => {
-										if (e.key === "Enter") (window as any).sendMessage();
-									}}
-								/>
-								<button
-									onClick={() => (window as any).sendMessage()}
-									className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-all hover:scale-105 shadow-lg"
-								>
-									Send
-								</button>
-							</div>
+					<div
+						id="inputArea"
+						className="glass-container rounded-3xl p-4 w-full max-w-3xl shadow-2xl"
+					>
+						<div className="flex gap-3">
+							<input
+								type="text"
+								id="userInput"
+								placeholder="type here"
+								className="flex-1 bg-gray-100 text-black px-6 py-4 rounded-full border border-gray-300 focus:outline-none input-glow placeholder-gray-500"
+								onKeyPress={(e) => {
+									if (e.key === "Enter") (window as any).sendMessage();
+								}}
+							/>
+							<button
+								onClick={() => (window as any).sendMessage()}
+								className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-all hover:scale-105 shadow-lg"
+							>
+								Send
+							</button>
 						</div>
 					</div>
 				</div>
 
-				{/* Loading/Analyzing Screen */}
-				<div id="analyzingScreen" className="hidden text-center">
+				{/* Page 3: Loading/Analyzing Screen */}
+				<div id="analyzingScreen" className="hidden chat-screen">
 					<div className="glass-container rounded-3xl p-12 max-w-2xl mx-auto">
 						<div className="flex justify-center mb-6">
 							<div className="spinner"></div>
@@ -776,9 +704,9 @@ export default function Page() {
 					</div>
 				</div>
 
-				{/* Typeform Container */}
-				<div id="typeformContainer" className="hidden w-full max-w-4xl">
-					<div className="glass-container rounded-3xl p-8 shadow-2xl typeform-appear">
+				{/* Page 4: Typeform Container */}
+				<div id="typeformContainer" className="hidden chat-screen">
+					<div className="glass-container rounded-3xl p-8 shadow-2xl typeform-appear max-w-4xl w-full">
 						<div className="text-center mb-6">
 							<h2 className="text-3xl font-bold text-white mb-2">
 								Your Custom Assessment
@@ -788,12 +716,10 @@ export default function Page() {
 							</p>
 						</div>
 
-						{/* Typeform Embed Goes Here */}
 						<div
 							id="typeformEmbed"
 							className="min-h-[600px] rounded-2xl overflow-hidden"
 						>
-							{/* Replace this placeholder with your Typeform embed */}
 							<div className="bg-gray-100 rounded-2xl p-12 text-center">
 								<h3 className="text-black text-2xl mb-4">Typeform Integration</h3>
 								<p className="text-gray-600 mb-6">
